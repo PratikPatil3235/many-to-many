@@ -5,6 +5,8 @@ import { Course } from './entities/course.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentService } from 'src/student/student.service';
 import { DeleteResult, Repository } from 'typeorm';
+import { CreateStudentDto } from 'src/student/dto/create-student.dto';
+import { Student } from 'src/student/entities/student.entity';
 
 @Injectable()
 export class CourseService {
@@ -32,7 +34,7 @@ export class CourseService {
   }
 
   async findAll(): Promise<Course[]> {
-    return await this.courseRepository.find({relations:['students']});
+    return await this.courseRepository.find({ relations: ['students'] });
   }
 
   async findOne(id: number): Promise<Course | null> {
@@ -44,6 +46,24 @@ export class CourseService {
       throw new NotFoundException(`Course With id ${id} Not found`);
     }
     return course;
+  }
+
+  async addStudentInCourse(
+    id: number,
+    createStudentDto: CreateStudentDto,
+  ): Promise<Course> {
+    const student = new Student();
+    student.name = createStudentDto.name;
+
+    let course = await this.courseRepository.findOne({ where: { id } });
+
+    if (!course) {
+      throw new NotFoundException(`Course With id ${id} Not found`);
+    }
+
+    course.students = [student];
+
+    return this.courseRepository.save(course);
   }
 
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
