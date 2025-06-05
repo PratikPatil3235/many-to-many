@@ -14,6 +14,7 @@ export class CourseService {
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
     private readonly studentService: StudentService,
+    @InjectRepository(Student)private readonly studentRepository: Repository<Student>,
   ) {}
   async create(createCourseDto: CreateCourseDto) {
     let course = new Course();
@@ -52,17 +53,19 @@ export class CourseService {
     id: number,
     createStudentDto: CreateStudentDto,
   ): Promise<Course> {
-    const student = new Student();
-    student.name = createStudentDto.name;
-
-    let course = await this.courseRepository.findOne({ where: { id } });
+    let course = await this.courseRepository.findOne({
+      where: { id },
+      relations: ['students'],
+    });
 
     if (!course) {
       throw new NotFoundException(`Course With id ${id} Not found`);
     }
 
-    course.students = [student];
+    const student = this.studentRepository.create(createStudentDto);
+    await this.studentRepository.save(student);
 
+    course.students.push(student);
     return this.courseRepository.save(course);
   }
 

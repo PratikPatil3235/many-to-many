@@ -9,6 +9,6 @@ export class Course {
   @Column()
   title: string;
 
-  @ManyToMany(() => Student, (student) => student.courses)
+  @ManyToMany(() => Student, (student) => student.courses )
   students: Student[];
 }
