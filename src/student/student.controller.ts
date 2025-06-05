@@ -13,6 +13,8 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { DeleteResult } from 'typeorm';
+import { Student } from './entities/student.entity';
 
 @Controller('student')
 @UsePipes(new ValidationPipe())
@@ -20,30 +22,32 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post()
-  create(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentService.create(createStudentDto);
+  async create(@Body() createStudentDto: CreateStudentDto): Promise<Student> {
+    return await this.studentService.create(createStudentDto);
   }
 
   @Get()
-  findAll() {
-    return this.studentService.findAll();
+  async findAll(): Promise<Student[]> {
+    return await this.studentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.findOne(+id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Student | null> {
+    return await this.studentService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStudentDto: UpdateStudentDto,
-  ) {
-    return this.studentService.update(+id, updateStudentDto);
+  ): Promise<Student> {
+    return await this.studentService.update(+id, updateStudentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
+    return await this.studentService.remove(+id);
   }
 }

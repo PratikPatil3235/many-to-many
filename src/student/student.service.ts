@@ -19,14 +19,17 @@ export class StudentService {
   }
 
   async findAll(): Promise<Student[]> {
-    return await this.studentRepository.find({ relations: ['course'] });
+    return await this.studentRepository.find({ relations: ['courses'] });
   }
 
   async findOne(id: number): Promise<Student | null> {
     const student = await this.studentRepository.findOne({
       where: { id },
-      relations: ['course'],
+      relations: ['courses'],
     });
+    if (!student) {
+      throw new NotFoundException(`Student with id ${id} not found`);
+    }
     return student;
   }
 
@@ -36,7 +39,7 @@ export class StudentService {
   ): Promise<Student> {
     const student = await this.studentRepository.findOne({
       where: { id },
-      relations: ['course'],
+      relations: ['courses'],
     });
     if (!student) {
       throw new NotFoundException(`Student With id ${id} Not Found`);
