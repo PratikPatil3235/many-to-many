@@ -3,7 +3,7 @@ import { StudentService } from './student.service';
 import { StudentController } from './student.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
-import { CreateStudentDto } from './dto/create-student.dto';
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([Student])],
