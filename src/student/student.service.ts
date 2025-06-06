@@ -4,12 +4,15 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Course)
+    private readonly cousreRepository: Repository<Course>,
   ) {}
 
   async create(createStudentDto: CreateStudentDto): Promise<Student> {
