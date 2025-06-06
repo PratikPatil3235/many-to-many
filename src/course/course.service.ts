@@ -94,7 +94,7 @@ export class CourseService {
 
     return await this.courseRepository.save(course);
   }
-
+  
   async remove(id: number): Promise<DeleteResult> {
     return this.courseRepository.delete(id);
   }

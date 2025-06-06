@@ -3,7 +3,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, ILike, Repository } from 'typeorm';
 import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
@@ -33,6 +33,20 @@ export class StudentService {
     if (!student) {
       throw new NotFoundException(`Student with id ${id} not found`);
     }
+    return student;
+  }
+
+  // creating custome queries
+  async selectStudentByName(name: string): Promise<Student> {
+    const student = await this.studentRepository.findOne({
+      where: { name:ILike(name) },
+      relations: ['courses'],
+    });
+
+    if (!student) {
+      throw new NotFoundException();
+    }
+
     return student;
   }
 

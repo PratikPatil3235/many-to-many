@@ -9,6 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -29,6 +30,11 @@ export class StudentController {
   @Get()
   async findAll(): Promise<Student[]> {
     return await this.studentService.findAll();
+  }
+
+  @Get('/getStudentByName')
+  async getStudentByName(@Query('name') name: string): Promise<Student> {
+    return await this.studentService.selectStudentByName(name);
   }
 
   @Get(':id')
